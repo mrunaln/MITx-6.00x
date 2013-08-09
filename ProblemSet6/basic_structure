@@ -1,0 +1,86 @@
+class NewsStory(object):
+    guid = ""
+
+    title = ""
+    subject = ""
+    summary = ""
+    link = ""
+    def __init__(self, guid, title, subject, summary, link):
+        self.guid = guid
+        self.title = title
+        self.subject = subject
+        self.summary = summary
+        self.link = link
+        
+    def getGuid(self):
+        return self.guid
+
+    def getTitle(self):
+        return self.title
+
+    def getSubject(self):
+        return self.subject
+
+    def getSummary(self):
+        return self.summary
+
+    def getLink(self):
+        return self.link
+
+
+#======================
+# Part 2
+# Triggers
+#======================
+
+class Trigger(object):
+    def evaluate(self, story):
+        """
+        Returns True if an alert should be generated
+        for the given news item, or False otherwise.
+        """
+        raise NotImplementedError
+
+# Whole Word Triggers
+# Problems 2-5
+
+# TODO: WordTrigger
+class WordTrigger(Trigger):
+    word = ""
+    def __init__(self,word):
+        self.word = word.lower()
+
+    def isWordIn(self , text):
+        
+        import string
+        text = text.lower()
+        text = text.split(" ")
+        newText = []
+        for myword in text:
+            flag = 0
+            for p in string.punctuation:
+               if p in myword:
+                     
+                     newmyword = myword.split(p)
+                     for newword in newmyword:
+                         for x in string.punctuation:
+                             if x in newword:
+                                 text.append(newword)
+                                 flag = 1
+                     if flag == 0:
+                         newText.append(newword)
+            if flag == 0:
+                newText.append(myword)
+                
+        return (self.word in newText)
+        
+
+# TODO: TitleTrigger
+class TitleTrigger(WordTrigger):
+    word = ""
+    def __init__(self, word):
+        self.word = word
+    def evaluate(self, title):
+        wt = WordTrigger(self.word)
+        return wt.isWordIn(title)
+    
